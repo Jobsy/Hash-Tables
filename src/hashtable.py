@@ -1,21 +1,24 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
 
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
     that accepts string keys
     '''
+
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
 
     def _hash(self, key):
         '''
@@ -25,7 +28,6 @@ class HashTable:
         '''
         return hash(key)
 
-
     def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
@@ -34,14 +36,12 @@ class HashTable:
         '''
         pass
 
-
     def _hash_mod(self, key):
         '''
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
         return self._hash(key) % self.capacity
-
 
     def insert(self, key, value):
         '''
@@ -54,9 +54,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
 
+        index = self._hash_mod(key)
 
+        new_pair = LinkedPair(key, value)
+
+        new_pair.next = self.storage[index]
+
+        self.storage[index] = new_pair
 
     def remove(self, key):
         '''
@@ -66,8 +71,12 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index] is None:
+            print("The key is not there")
 
+        remove = self.storage[index]
+        self.storage[index] = remove.next
 
     def retrieve(self, key):
         '''
@@ -77,8 +86,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        current_pair = self.storage[index]
 
+        while current_pair:
+            if current_pair.key == key:
+                return current_pair.value
+            current_pair = current_pair.next
+
+        return None
 
     def resize(self):
         '''
@@ -87,8 +103,8 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        for _ in range(self.capacity):
+            self.storage.append(None)
 
 
 if __name__ == "__main__":
