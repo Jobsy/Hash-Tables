@@ -26,7 +26,8 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        return hash(key)
+        # return hash(key)
+        return self._hash_djb2(key)
 
     def _hash_djb2(self, key):
         '''
@@ -34,7 +35,10 @@ class HashTable:
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
+        hash = 5381
+        for i in key:
+            hash = ((hash << 5) + hash) + ord(i)
+        return hash
 
     def _hash_mod(self, key):
         '''
