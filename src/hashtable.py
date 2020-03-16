@@ -1,21 +1,24 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
 
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
     that accepts string keys
     '''
+
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
 
     def _hash(self, key):
         '''
@@ -23,8 +26,8 @@ class HashTable:
 
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
-        return hash(key)
-
+        # return hash(key)
+        return self._hash_djb2(key)
 
     def _hash_djb2(self, key):
         '''
@@ -32,8 +35,10 @@ class HashTable:
 
         OPTIONAL STRETCH: Research and implement DJB2
         '''
-        pass
-
+        hash = 5381
+        for i in key:
+            hash = ((hash << 5) + hash) + ord(i)
+        return hash
 
     def _hash_mod(self, key):
         '''
@@ -41,7 +46,6 @@ class HashTable:
         within the storage capacity of the hash table.
         '''
         return self._hash(key) % self.capacity
-
 
     def insert(self, key, value):
         '''
@@ -54,9 +58,17 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # we get the new index by calling the hash fuction with the provided key
+        index = self._hash_mod(key)
 
+        # using the provided key and value, we generate a new key value pair by calling the LinkedPair function
+        new_pair = LinkedPair(key, value)
 
+        # we generate or make available a memory space for the next pair of key and value by storing the index in the next pair
+        new_pair.next = self.storage[index]
+
+        # with that, we can now store the new pair of key and value in the array using the index
+        self.storage[index] = new_pair
 
     def remove(self, key):
         '''
@@ -66,8 +78,19 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
 
+        # first we get our index
+        index = self._hash_mod(key)
+
+        # if index does not exit print error message
+        if self.storage[index] is None:
+            print("The key is not there")
+
+        # else get the position of the index in our storage
+        remove = self.storage[index]
+
+        # since the next index position is none, we set the current position of our index to next
+        self.storage[index] = remove.next
 
     def retrieve(self, key):
         '''
@@ -77,8 +100,22 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
 
+        # get the current index
+        index = self._hash_mod(key)
+
+        # get the position of the current index
+        current_pair = self.storage[index]
+
+        while current_pair:
+            # if the key at current positon is equal to key
+            if current_pair.key == key:
+                # return the key value pair
+                return current_pair.value
+            # else check the next by set the current podition to next, and repeat the loop
+            current_pair = current_pair.next
+        # else return none if not found on reaching the end of the list
+        return None
 
     def resize(self):
         '''
@@ -87,8 +124,9 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        # we simple append a none after every index position in the list
+        for _ in range(self.capacity):
+            self.storage.append(None)
 
 
 if __name__ == "__main__":
